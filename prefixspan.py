@@ -104,12 +104,20 @@ def devide_seq(word_list):
     all_seq_list = []
     one_seq_list = []
     for word in word_list:
-        if len(word) == 2:
+        if len(word) == 2 and word[0] == '。':
+            # 文境界
+            if one_seq_list != []:
+                all_seq_list.append(one_seq_list)
+            one_seq_list = []
+        elif len(word) == 2:
+            # 文内
             token = word[0]
             PoS = word[1].split(',')[0]
             one_seq_list.append((token, PoS))
         elif len(word) == 1 and word[0] == 'EOS':
-            all_seq_list.append(one_seq_list)
+            # 文境界
+            if one_seq_list != []:
+                all_seq_list.append(one_seq_list)
             one_seq_list = []
         else:
             pass
