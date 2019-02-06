@@ -26,16 +26,17 @@ def find(seq):
         PoS1 = word[1][0]
         PoS2 = word[1][1]
         if PoS2 == 'サ変接続':
-            merged_token = search_prefix(i, seq)
-            one_seq_list.append(merged_token)
+            #imerged_token = search_prefix(i, seq)
+            #one_seq_list.append(merged_token)
+            one_seq_list.append(token)
     return one_seq_list
 
-
+'''
 def search_prefix(i, seq):
     token_pre2 = seq[i-1][0]
 
     return merged_token
-
+'''
 
 def devide_seq(word_list):
     all_seq_list = []
