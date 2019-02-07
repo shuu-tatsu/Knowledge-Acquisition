@@ -78,13 +78,33 @@ class Analyser():
             self.parse(one_sent)
 
     def parse(self, one_sent):
-        nominal_list = self.find_nominal(one_sent)
-        self.clauses2nominal(one_sent, nominal_list)
-        self.nominal2clauses(one_sent, nominal_list)
+        nominal_clause_id_list = self.find_nominal(one_sent)
+        self.clauses2nominal(one_sent, nominal_clause_id_list)
+        self.nominal2clauses(one_sent, nominal_clause_id_list)
 
     def find_nominal(self, one_sent):
-        
-        return nominal_list
+        nominal_clause_id_list = []
+        for clause in one_sent.clauses_list:
+            if self.exist_nominal(clause):
+                # this clause includes nominal
+                clause_id = clause[0][1]
+                nominal_clause_id_list.append(clause_id)
+            else:
+                pass
+        return nominal_clause_id_list
+
+    def exist_nominal(self, clause):
+        for word_pos_list in clause[1:]:
+            token, pos1, pos2 = self.get_word_pos(word_pos_list)
+            if pos2 == 'サ変接続':
+                return True
+        return False
+
+    def get_word_pos(self, word_pos_list):
+        token = word_pos_list[0]
+        pos1 = word_pos_list[1]
+        pos2 = word_pos_list[2]
+        return token, pos1, pos2
 
 
 def main():
