@@ -79,8 +79,18 @@ class Analyser():
 
     def parse(self, one_sent):
         nominal_clause_id_list = self.find_nominal(one_sent)
-        self.clauses2nominal(one_sent, nominal_clause_id_list)
+        #self.clauses2nominal(one_sent, nominal_clause_id_list)
         self.nominal2clauses(one_sent, nominal_clause_id_list)
+
+    def nominal2clauses(self, one_sent, nominal_clause_id_list):
+        for clause in one_sent.clauses_list:
+            clause_id = clause[0][1]
+            if clause_id in nominal_clause_id_list:
+                depend_id = int(clause[0][2][:-1])
+                print(one_sent.clauses_list[depend_id])
+
+    def clauses2nominal(self, one_sent, nominal_clause_id_list):
+        pass
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []
