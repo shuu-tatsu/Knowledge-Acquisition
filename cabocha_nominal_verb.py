@@ -125,17 +125,29 @@ class Analyser():
 
     def parse(self, one_sent):
         nominal_clause_id_list = self.find_nominal(one_sent)
-        #self.clauses2nominal(one_sent, nominal_clause_id_list)
+        self.clauses2nominal(one_sent, nominal_clause_id_list)
         self.nominal2clauses(one_sent, nominal_clause_id_list)
+        print('')
 
     def nominal2clauses(self, one_sent, nominal_clause_id_list):
         for one_clause_list in one_sent.clauses_list:
             clause = Clause(one_clause_list)
             if clause.clause_id in nominal_clause_id_list:
-                print(one_sent.clauses_list[clause.clause_depend_id])
+                depend_clause = Clause(one_sent.clauses_list[clause.clause_depend_id])
+                print('【サ変接続:{}】 【depend_clause:{}】'.format(\
+                      clause.clause_token_str, depend_clause.clause_token_str))
 
     def clauses2nominal(self, one_sent, nominal_clause_id_list):
-        pass
+        for nominal_id in nominal_clause_id_list:
+            self.find_depending(one_sent, nominal_id)
+
+    def find_depending(self, one_sent, nominal_id):
+        for one_clause_list in one_sent.clauses_list:
+            clause = Clause(one_clause_list)
+            if clause.clause_depend_id == nominal_id:
+                nominal_clause = Clause(one_sent.clauses_list[nominal_id])
+                print('【depending_clause:{}】 【サ変接続:{}】'.format(\
+                      clause.clause_token_str, nominal_clause.clause_token_str))
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []
