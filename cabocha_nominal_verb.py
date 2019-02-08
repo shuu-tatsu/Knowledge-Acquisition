@@ -42,6 +42,52 @@ class Sentence():
         return word_info_list
 
 
+class Clause():
+
+    def __init__(self, clause):
+        self.clause = clause
+        self.clause_id = self.get_id()
+        self.clause_depend_id = self.get_depend_id()
+        self.clause_token_list = self.get_token_list()
+        self.clause_token_str = self.get_token_str()
+        self.include_nominal = self.exist_nominal()
+
+    def get_id(self):
+        return int(self.clause[0][1])
+
+    def get_depend_id(self):
+        return int(self.clause[0][2][:-1])
+
+    def get_token_list(self):
+        return self.clause[1:]
+
+    def get_token_str(self):
+        token_str = ''
+        for word_pos_list in self.clause[1:]:
+            token, pos1, pos2 = self.get_word_pos(word_pos_list)
+            if token:
+                token_str = token_str + token
+        return token_str
+
+    def get_word_pos(self, word_pos_list):
+        try:
+            token = word_pos_list[0]
+            pos1 = word_pos_list[1]
+            pos2 = word_pos_list[2]
+        except IndexError:
+            token = None
+            pos1 = None
+            pos2 = None
+        return token, pos1, pos2
+
+    def exist_nominal(self):
+        for word_pos_list in self.clause[1:]:
+            token, pos1, pos2 = self.get_word_pos(word_pos_list)
+            if pos2 == 'サ変接続':
+                return True
+        return False
+
+
 class Analyser():
 
     def __init__(self):
@@ -83,38 +129,24 @@ class Analyser():
         self.nominal2clauses(one_sent, nominal_clause_id_list)
 
     def nominal2clauses(self, one_sent, nominal_clause_id_list):
-        for clause in one_sent.clauses_list:
-            clause_id = clause[0][1]
-            if clause_id in nominal_clause_id_list:
-                depend_id = int(clause[0][2][:-1])
-                print(one_sent.clauses_list[depend_id])
+        for one_clause_list in one_sent.clauses_list:
+            clause = Clause(one_clause_list)
+            if clause.clause_id in nominal_clause_id_list:
+                print(one_sent.clauses_list[clause.clause_depend_id])
 
     def clauses2nominal(self, one_sent, nominal_clause_id_list):
         pass
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []
-        for clause in one_sent.clauses_list:
-            if self.exist_nominal(clause):
+        for one_clause_list in one_sent.clauses_list:
+            clause = Clause(one_clause_list)
+            if clause.include_nominal:
                 # this clause includes nominal
-                clause_id = clause[0][1]
-                nominal_clause_id_list.append(clause_id)
+                nominal_clause_id_list.append(clause.clause_id)
             else:
                 pass
         return nominal_clause_id_list
-
-    def exist_nominal(self, clause):
-        for word_pos_list in clause[1:]:
-            token, pos1, pos2 = self.get_word_pos(word_pos_list)
-            if pos2 == 'サ変接続':
-                return True
-        return False
-
-    def get_word_pos(self, word_pos_list):
-        token = word_pos_list[0]
-        pos1 = word_pos_list[1]
-        pos2 = word_pos_list[2]
-        return token, pos1, pos2
 
 
 def main():
