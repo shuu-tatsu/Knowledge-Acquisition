@@ -51,6 +51,7 @@ class Clause():
         self.clause_token_list = self.get_token_list()
         self.clause_token_str = self.get_token_str()
         self.include_nominal = self.exist_nominal()
+        self.nominal_str = self.get_nominal_str()
 
     def get_id(self):
         return int(self.clause[0][1])
@@ -86,6 +87,15 @@ class Clause():
             if pos2 == 'サ変接続':
                 return True
         return False
+
+    def get_nominal_str(self):
+        nominal_list = []
+        for word_pos_list in self.clause[1:]:
+            token, pos1, pos2 = self.get_word_pos(word_pos_list)
+            if pos2 == 'サ変接続':
+                nominal_list.append(token)
+        nominal_str = ' '.join(nominal_list)
+        return nominal_str
 
 
 class Analyser():
@@ -125,29 +135,31 @@ class Analyser():
 
     def parse(self, one_sent):
         nominal_clause_id_list = self.find_nominal(one_sent)
-        self.clauses2nominal(one_sent, nominal_clause_id_list)
-        self.nominal2clauses(one_sent, nominal_clause_id_list)
+        self.extract(one_sent, nominal_clause_id_list)
         print('')
 
-    def nominal2clauses(self, one_sent, nominal_clause_id_list):
-        for one_clause_list in one_sent.clauses_list:
-            clause = Clause(one_clause_list)
-            if clause.clause_id in nominal_clause_id_list:
-                depend_clause = Clause(one_sent.clauses_list[clause.clause_depend_id])
-                print('【サ変接続:{}】 【depend_clause:{}】'.format(\
-                      clause.clause_token_str, depend_clause.clause_token_str))
-
-    def clauses2nominal(self, one_sent, nominal_clause_id_list):
+    def extract(self, one_sent, nominal_clause_id_list):
         for nominal_id in nominal_clause_id_list:
-            self.find_depending(one_sent, nominal_id)
+            self.extract_portion(one_sent, nominal_id)
 
-    def find_depending(self, one_sent, nominal_id):
+    def extract_portion(self, one_sent, nominal_id):
+        depended = []
+        depending = []
+        nominal_clause = Clause(one_sent.clauses_list[nominal_id])
         for one_clause_list in one_sent.clauses_list:
             clause = Clause(one_clause_list)
             if clause.clause_depend_id == nominal_id:
-                nominal_clause = Clause(one_sent.clauses_list[nominal_id])
-                print('【depending_clause:{}】 【サ変接続:{}】'.format(\
-                      clause.clause_token_str, nominal_clause.clause_token_str))
+                # サ変が依存されている（depended）
+                depended.append(clause.clause_token_str)
+            if clause.clause_id == nominal_clause.clause_depend_id:
+                # サ変が依存している（depending）
+                depending.append(clause.clause_token_str)
+        depended_str = ''.join(depended)
+        depending_str = ''.join(depending)
+        print('【切り口:depended+サ変】{}{}'.format(\
+              depended_str, nominal_clause.nominal_str))
+        print('【選択肢:depended+サ変+depending】{}{}{}'.format(\
+              depended_str, nominal_clause.clause_token_str, depending_str))
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []
