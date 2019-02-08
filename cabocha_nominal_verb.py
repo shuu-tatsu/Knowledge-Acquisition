@@ -7,8 +7,9 @@ import re
 
 class Sentence():
 
-    def __init__(self, one_sent_tree):
+    def __init__(self, one_sent_tree, sentence_str):
         self.one_sent_tree = one_sent_tree
+        self.sentence_str = sentence_str
         self.clauses_list = []
 
     def get_clauses(self):
@@ -128,12 +129,13 @@ class Analyser():
         for sentence in sent_list:
             tree = c.parse(sentence)
 
-            one_sent = Sentence(tree)
+            one_sent = Sentence(tree, sentence)
             one_sent.get_clauses()
 
             self.parse(one_sent)
 
     def parse(self, one_sent):
+        print('【入力文】{}'.format(one_sent.sentence_str))
         nominal_clause_id_list = self.find_nominal(one_sent)
         self.extract(one_sent, nominal_clause_id_list)
         print('')
@@ -176,8 +178,8 @@ class Analyser():
 def main():
     # Data
     DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_toy_data/'
-    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
-    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
+    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
+    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
 
     analyser = Analyser()
     sent_list = analyser.load(READ_FILE)
