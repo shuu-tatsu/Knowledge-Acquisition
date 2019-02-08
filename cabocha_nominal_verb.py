@@ -128,7 +128,7 @@ class Analyser():
         c = CaboCha.Parser('-d /home/cl/shusuke-t//usr/lib/mecab/dic/mecab-ipadic-neologd')
         for sentence in sent_list:
             tree = c.parse(sentence)
-
+            print(c.parseToString(sentence))
             one_sent = Sentence(tree, sentence)
             one_sent.get_clauses()
 
@@ -178,8 +178,8 @@ class Analyser():
 def main():
     # Data
     DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_toy_data/'
-    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
-    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
+    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
+    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
 
     analyser = Analyser()
     sent_list = analyser.load(READ_FILE)
