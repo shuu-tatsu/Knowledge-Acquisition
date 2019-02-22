@@ -3,6 +3,7 @@
 
 import CaboCha
 import re
+import collections
 
 
 class Sentence():
@@ -200,22 +201,56 @@ class ParsedSentence():
         self.kiriguchi_sentakushi_tuple_list.append((kiriguchi_str, sentakushi_str))
 
     def print_sentence(self):
-        print(self.sentence_str)
+        print('【入力文】:{}'.format(self.sentence_str))
 
-    def print_kiriguchi(self):
+    def get_kiriguchi(self):
         for kiriguchi_sentakushi in self.kiriguchi_sentakushi_tuple_list:
-            print(kiriguchi_sentakushi[0])
+             return kiriguchi_sentakushi[0]
 
     def print_kiriguchi_sentakushi(self):
         for kiriguchi_sentakushi in self.kiriguchi_sentakushi_tuple_list:
-            print(kiriguchi_sentakushi)
+            print('【切り口, 選択肢】:{}'.format(kiriguchi_sentakushi))
+
+
+def make_kiriguchi_list(kiriguchi_counter, top_s, top_e):
+    print('カウンター')
+    print(kiriguchi_counter)
+    print('')
+    tuple_list = kiriguchi_counter.most_common()[top_s:top_e]
+    kiriguchi_list = [kiriguchi_freq[0] for kiriguchi_freq in tuple_list]
+    return kiriguchi_list
+
+
+def kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str):
+    print('')
+    print('#######')
+    print('【ターゲット切り口】:{}'.format(target_kiriguchi_str))
+    print('#######')
+    for parsed_sent in analysed_sent_list:
+        kiriguchi_str = parsed_sent.get_kiriguchi()
+        if kiriguchi_str == target_kiriguchi_str:
+            parsed_sent.print_sentence()
+            parsed_sent.print_kiriguchi_sentakushi()
+
+
+def count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list):
+    for target_kiriguchi_str in kiriguchi_list:
+        print('')
+        print('#######')
+        print('【ターゲット切り口】:{}'.format(target_kiriguchi_str))
+        print('#######')
+        for parsed_sent in analysed_sent_list:
+            kiriguchi_str = parsed_sent.get_kiriguchi()
+            if kiriguchi_str == target_kiriguchi_str:
+                parsed_sent.print_sentence()
+                parsed_sent.print_kiriguchi_sentakushi()
 
 
 def main():
     # Data
     DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_toy_data/'
-    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
-    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
+    READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
+    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
 
     # Analyse
     analyser = Analyser()
@@ -223,10 +258,20 @@ def main():
     analysed_sent_list = analyser.analyse(sent_list)
 
     # 複数文共通の切り口を探索
+    kiriguchi_list = []
     for parsed_sent in analysed_sent_list:
-        parsed_sent.print_sentence()
-        parsed_sent.print_kiriguchi_sentakushi()
-        print('##')
+        kiriguchi_str = parsed_sent.get_kiriguchi()
+        if kiriguchi_str:
+            kiriguchi_list.append(kiriguchi_str)
+    kiriguchi_counter = collections.Counter(kiriguchi_list)
+
+    # 高頻出切り口とそれに対応する選択肢の抽出
+    kiriguchi_list = make_kiriguchi_list(kiriguchi_counter, 6, 9)
+    #count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list)
+
+    # 切り口をクエリとした選択肢の検索
+    target_kiriguchi_str = '設定'
+    kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str)
 
 
 if __name__ == '__main__':
