@@ -257,16 +257,18 @@ def count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list):
                 print('')
 
 
-def main():
+def main(toy, retrieval_type):
+    # 高頻出切り口表示数
+    freq_top_k = 1
+
     # Data
-
-    DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_extracted_data/'
-    READ_FILE = DATA_DIR + 'manual_extracted_data.txt'
-
-    #DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_toy_data/'
-    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
-
-    #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
+    if toy:
+        DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_toy_data/'
+        READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
+        #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
+    else:
+        DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/d_extracted_data/'
+        READ_FILE = DATA_DIR + 'manual_extracted_data.txt'
 
     # Analyse
     analyser = Analyser()
@@ -281,14 +283,17 @@ def main():
             kiriguchi_list.append(kiriguchi_str)
     kiriguchi_counter = collections.Counter(kiriguchi_list)
 
-    # 高頻出切り口とそれに対応する選択肢の抽出
-    kiriguchi_list = make_kiriguchi_list(kiriguchi_counter, 0, 10)
-    count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list)
-
-    # 切り口をクエリとした選択肢の検索
-    target_kiriguchi_str = '印刷'
-    #kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str)
+    if retrieval_type == 'freq':
+        # 高頻出切り口とそれに対応する選択肢の抽出
+        kiriguchi_list = make_kiriguchi_list(kiriguchi_counter, 0, freq_top_k)
+        count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list)
+    elif retrieval_type == 'query':
+        # 切り口をクエリとした選択肢の検索
+        target_kiriguchi_str = '印刷'
+        kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str)
 
 
 if __name__ == '__main__':
-    main()
+    toy = False # 使用データがtoyか否か
+    retrieval_type = 'freq' #freq or query
+    main(toy, retrieval_type)
