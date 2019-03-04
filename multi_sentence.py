@@ -109,7 +109,13 @@ class Analyser():
         with open(read_file, 'r') as r:
             doc_list = [s for s in r]
         sent_list = self.split_doc(doc_list)
-        return sent_list
+        deduplication_list = self.deduplicate(sent_list)
+        return deduplication_list
+
+    def deduplicate(self, sent_list):
+        deduplication_set = set(sent_list)
+        deduplication_list = list(deduplication_set)
+        return deduplication_list
 
     def split_doc(self, doc_list):
         all_sent = []
@@ -294,6 +300,7 @@ def main(toy, retrieval_type):
 
 
 if __name__ == '__main__':
-    toy = False # 使用データがtoyか否か
+    #toy = True # 使用データがtoyか否か False or True
+    toy = False # 使用データがtoyか否か False or True
     retrieval_type = 'freq' #freq or query
     main(toy, retrieval_type)
