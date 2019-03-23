@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import collections
+
+
+def common_kiriguchi(analysed_sent_list):
+    # 複数文共通の切り口を探索
+    kiriguchi_list = []
+    for parsed_sent in analysed_sent_list:
+        kiriguchi_str = parsed_sent.get_kiriguchi()
+        if kiriguchi_str:
+            kiriguchi_list.append(kiriguchi_str)
+    kiriguchi_counter = collections.Counter(kiriguchi_list)
+    return kiriguchi_counter
+
 
 def make_kiriguchi_list(kiriguchi_counter, top_s, top_e):
     print('カウンター')
@@ -11,7 +24,7 @@ def make_kiriguchi_list(kiriguchi_counter, top_s, top_e):
     return kiriguchi_list
 
 
-def kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str):
+def kiriguchi_retrieval(analysed_sent_list, target_kiriguchi_str):
     print('')
     print('#######')
     print('【ターゲット切り口】:{}'.format(target_kiriguchi_str))
@@ -26,7 +39,7 @@ def kiriguchi_retrieval(parsed_sent, analysed_sent_list, target_kiriguchi_str):
             print('')
 
 
-def count_retrieval(parsed_sent, analysed_sent_list, kiriguchi_list):
+def count_retrieval(analysed_sent_list, kiriguchi_list):
     for target_kiriguchi_str in kiriguchi_list:
         print('')
         print('#######')

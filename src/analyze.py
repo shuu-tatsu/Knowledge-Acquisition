@@ -18,7 +18,8 @@ class Analyser():
         return deduplication_list
 
     def deduplicate(self, sent_list):
-        deduplication_set = set(sent_list)
+        # Blockの為、文の順番を保持したまま、重複文を除去
+        deduplication_set = sorted(set(sent_list), key=sent_list.index)
         deduplication_list = list(deduplication_set)
         return deduplication_list
 

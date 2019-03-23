@@ -2,6 +2,26 @@ import CaboCha
 import re
 
 
+class Block():
+
+    def __init__(self, sent_list, num_block):
+        self.sent_list = sent_list
+        self.length = len(sent_list)
+        self.num_block = num_block
+        self.blocks_list = self.devide()
+
+    def devide(self):
+        num_element = int(self.length / self.num_block)        
+        blocks_list = []
+        one_block_list = []
+        for i, sent in enumerate(self.sent_list):
+            one_block_list.append(sent)
+            if (i + 1) % num_element == 0:
+                blocks_list.append(one_block_list)
+                one_block_list = []
+        return blocks_list
+
+
 class Sentence():
 
     def __init__(self, one_sent_tree, sentence_str):
