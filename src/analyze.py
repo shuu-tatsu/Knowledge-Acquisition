@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import CaboCha
-import re
-import collections
 import seq
 
 
