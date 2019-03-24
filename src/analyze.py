@@ -44,20 +44,17 @@ class Analyser():
 
         for sentence in sent_list:
             tree = c.parse(sentence)
-            #print(c.parseToString(sentence))
             one_sent = seq.Sentence(tree, sentence)
             one_sent.get_clauses()
-            #self.parse(one_sent)
-            parsed_sent = seq.ParsedSentence() #add
-            self.parse(one_sent, parsed_sent) #add
-            parsed_sentences_list.append(parsed_sent) #add
-        return parsed_sentences_list #add
+            parsed_sent = seq.ParsedSentence() 
+            self.parse(one_sent, parsed_sent) 
+            parsed_sentences_list.append(parsed_sent)
+        return parsed_sentences_list 
 
-    #def parse(self, one_sent):
     def parse(self, one_sent, parsed_sent):
 
         #print('【入力文】{}'.format(one_sent.sentence_str))
-        parsed_sent.get_sentence_str(one_sent.sentence_str) #add
+        parsed_sent.get_sentence_str(one_sent.sentence_str)
 
         nominal_clause_id_list = self.find_nominal(one_sent)
         self.extract(one_sent, nominal_clause_id_list, parsed_sent)
@@ -85,9 +82,9 @@ class Analyser():
         #      depended_str, nominal_clause.nominal_str))
         #print('【選択肢:depended+サ変+depending】{}{}{}'.format(\
         #      depended_str, nominal_clause.clause_token_str, depending_str))
-        kiriguchi_str = depended_str + nominal_clause.nominal_str #add
-        sentakushi_str = depended_str + nominal_clause.clause_token_str + depending_str #add
-        parsed_sent.get_kiriguchi_sentakushi(kiriguchi_str, sentakushi_str) #add
+        kiriguchi_str = depended_str + nominal_clause.nominal_str 
+        sentakushi_str = depended_str + nominal_clause.clause_token_str + depending_str
+        parsed_sent.get_kiriguchi_sentakushi(kiriguchi_str, sentakushi_str) 
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []

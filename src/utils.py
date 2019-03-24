@@ -16,9 +16,6 @@ def common_kiriguchi(analysed_sent_list):
 
 
 def make_kiriguchi_list(kiriguchi_counter, top_s, top_e):
-    print('カウンター')
-    print(kiriguchi_counter)
-    print('')
     tuple_list = kiriguchi_counter.most_common()[top_s:top_e]
     kiriguchi_list = [kiriguchi_freq[0] for kiriguchi_freq in tuple_list]
     return kiriguchi_list
