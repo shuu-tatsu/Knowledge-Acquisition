@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-# 切り口検索の方法: 高頻度順検索orクエリ検索
+# 切り口検索の方法: 高頻度順検索orクエリ検索。
+#(1)クエリ検索の場合はqueryを記述。
+#retrieval_type = 'query' #freq or query
+#query = '印刷'
+#(2)高頻度順検索の場合はquery不要。
 retrieval_type = 'freq' #freq or query
 
 # ブロック数

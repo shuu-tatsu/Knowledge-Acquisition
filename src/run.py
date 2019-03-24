@@ -19,20 +19,20 @@ def main(retrieval_type):
     # [[analysed_sent_list], [], ..., []]
     blocks = seq.Block(analysed_sent_list, config.num_block)
 
-    # ブロック毎
-    for one_block_analysed_sent_list in blocks.blocks_list:
-        # 複数文共通の切り口を探索
-        kiriguchi_counter = utils.common_kiriguchi(one_block_analysed_sent_list)
-        print(kiriguchi_counter)
-
-        if retrieval_type == 'freq':
+    if retrieval_type == 'freq':
+        # ブロック毎
+        for one_block_analysed_sent_list in blocks.blocks_list:
+            # 複数文共通の切り口を探索
+            kiriguchi_counter = utils.common_kiriguchi(one_block_analysed_sent_list)
+            print(kiriguchi_counter)
             # 高頻出切り口とそれに対応する選択肢の抽出
             kiriguchi_list = utils.make_kiriguchi_list(kiriguchi_counter, 0, config.freq_top_k)
             utils.count_retrieval(one_block_analysed_sent_list, kiriguchi_list)
-        elif retrieval_type == 'query':
-            # 切り口をクエリとした選択肢の検索
-            target_kiriguchi_str = '印刷'
-            utils.kiriguchi_retrieval(analysed_sent_list, target_kiriguchi_str)
+
+    elif retrieval_type == 'query':
+        # 切り口をクエリとした選択肢の検索
+        target_kiriguchi_str = config.query
+        utils.kiriguchi_retrieval(analysed_sent_list, target_kiriguchi_str)
 
 
 if __name__ == '__main__':
