@@ -1,5 +1,29 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import CaboCha
 import re
+
+
+class Sentakushi():
+
+    def __init__(self, token):
+        c = CaboCha.Parser('-d /home/cl/shusuke-t//usr/lib/mecab/dic/mecab-ipadic-neologd')
+        tree = c.parse(token)
+        self.tree_str = tree.toString(CaboCha.FORMAT_LATTICE)
+
+    def remove_postposi(self):
+        word_list = self.tree_str.split('\n')
+        new_word_list = []
+        if len(word_list) > 1:
+            for word in word_list[1:]:
+                token_list = word.split(',')
+                if len(token_list) > 1:
+                    word_pos = token_list[0].split('\t')
+                    if word_pos[1] == '名詞':
+                        new_word_list.append(word_pos[0])
+        removed_token = ''.join(new_word_list)
+        return removed_token
 
 
 class Block():
@@ -124,15 +148,15 @@ class ParsedSentence():
     def get_sentence_str(self, sentence_str):
         self.sentence_str = sentence_str
 
-    def get_kiriguchi_sentakushi(self, kiriguchi_str, sentakushi_str):
-        self.kiriguchi_sentakushi_tuple_list.append((kiriguchi_str, sentakushi_str))
+    def get_kiriguchi_sentakushi(self, kiriguchi_str, sentakushi_str, front_str, back_str): #add
+        self.kiriguchi_sentakushi_tuple_list.append((kiriguchi_str, sentakushi_str, front_str, back_str)) #add
 
     def print_sentence(self, cnt):
         print('【入力文{}】:{}'.format(cnt, self.sentence_str))
 
     def get_kiriguchi(self):
         for kiriguchi_sentakushi in self.kiriguchi_sentakushi_tuple_list:
-             return kiriguchi_sentakushi[0]
+            return kiriguchi_sentakushi[0]
 
     def print_kiriguchi_sentakushi(self):
         for kiriguchi_sentakushi in self.kiriguchi_sentakushi_tuple_list:
@@ -141,4 +165,6 @@ class ParsedSentence():
     def print_target_kiriguchi_sentakushi(self, kiriguchi_str, cnt):
         for kiriguchi_sentakushi in self.kiriguchi_sentakushi_tuple_list:
             if kiriguchi_sentakushi[0] == kiriguchi_str:
-                print('【選択肢{}】:{}'.format(cnt, kiriguchi_sentakushi[1]))
+                print('【選択肢(前方からかかる部分){}】:{}'.format(cnt, kiriguchi_sentakushi[2]))
+                print('【選択肢(後方からかかる部分){}】:{}'.format(cnt, kiriguchi_sentakushi[3]))
+                print('【選択肢(全体){}】:{}'.format(cnt, kiriguchi_sentakushi[1]))

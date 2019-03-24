@@ -44,6 +44,8 @@ class Analyser():
 
         for sentence in sent_list:
             tree = c.parse(sentence)
+            #print(c.parseToString(sentence))
+            #print(tree.toString(CaboCha.FORMAT_LATTICE))
             one_sent = seq.Sentence(tree, sentence)
             one_sent.get_clauses()
             parsed_sent = seq.ParsedSentence() 
@@ -84,7 +86,14 @@ class Analyser():
         #      depended_str, nominal_clause.clause_token_str, depending_str))
         kiriguchi_str = depended_str + nominal_clause.nominal_str 
         sentakushi_str = depended_str + nominal_clause.clause_token_str + depending_str
-        parsed_sent.get_kiriguchi_sentakushi(kiriguchi_str, sentakushi_str) 
+        front_str = self.remove_postpositional_particle(depended_str) #add
+        back_str = self.remove_postpositional_particle(depending_str) #add
+        parsed_sent.get_kiriguchi_sentakushi(kiriguchi_str, sentakushi_str, front_str, back_str) #add
+
+    def remove_postpositional_particle(self, token):
+        sentakushi = seq.Sentakushi(token)
+        removed_token = sentakushi.remove_postposi()
+        return removed_token
 
     def find_nominal(self, one_sent):
         nominal_clause_id_list = []

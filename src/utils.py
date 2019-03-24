@@ -50,4 +50,3 @@ def count_retrieval(analysed_sent_list, kiriguchi_list):
                 parsed_sent.print_sentence(cnt)
                 parsed_sent.print_target_kiriguchi_sentakushi(kiriguchi_str, cnt)
                 print('')
-
