@@ -17,7 +17,7 @@ freq_top_k = 3
 
 # Data
 toy = True # 使用データがtoyか否か False or True
-DATA_DIR = '/cl/work/shusuke-t/Oki-2018/work/tatsumi-work/Knowledge-Acquisition/data/'
+DATA_DIR = '../data/'
 if toy:
     READ_FILE = DATA_DIR + 'AirPrint取扱説明書_extracted.txt'
     #READ_FILE = DATA_DIR + 'AirPrint取扱説明書_toy.txt'
